@@ -1,7 +1,8 @@
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 
 from app.core.config import settings
 from app.core.exceptions import BusinessError
@@ -50,6 +51,7 @@ async def business_error_handler(
     )
 
 
+# API routes
 app.include_router(auth_router)
 app.include_router(companies_router)
 app.include_router(applications_router)
@@ -65,3 +67,26 @@ def health_check():
         "service": "JobTrack API",
     }
 
+
+# -----------------------------
+# React Frontend
+# -----------------------------
+
+FRONTEND_DIR = Path("/app/frontend/dist")
+INDEX_FILE = FRONTEND_DIR / "index.html"
+
+
+@app.get("/")
+async def frontend_root():
+    return FileResponse(INDEX_FILE)
+
+
+@app.get("/{full_path:path}")
+async def frontend_fallback(full_path: str):
+    file_path = FRONTEND_DIR / full_path
+
+    if file_path.is_file():
+        return FileResponse(file_path)
+
+    # React Router fallback
+    return FileResponse(INDEX_FILE)
