@@ -16,4 +16,7 @@ RUN poetry config virtualenvs.create false \
 COPY app ./app
 
 COPY alembic.ini ./
+
 COPY alembic ./alembic
+
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
