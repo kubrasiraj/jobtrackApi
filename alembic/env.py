@@ -66,7 +66,7 @@ def run_migrations_online() -> None:
 
     # Use the database URL from the .env file.
     if configuration is not None:
-        configuration["sqlalchemy.url"] = settings.database_url
+        configuration["sqlalchemy.url"] = settings.DATABASE_URL
 
     # Create a database connection.
     connectable = engine_from_config(
