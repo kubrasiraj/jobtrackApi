@@ -1,3 +1,22 @@
+# -------------------------
+# Stage 1: Build React
+# -------------------------
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /frontend
+
+COPY frontend/package*.json ./
+
+RUN npm install
+
+COPY frontend/ ./
+
+RUN npm run build
+
+
+# -------------------------
+# Stage 2: FastAPI
+# -------------------------
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -18,5 +37,8 @@ COPY app ./app
 COPY alembic.ini ./
 
 COPY alembic ./alembic
+
+# Copy React production build into FastAPI container
+COPY --from=frontend-builder /frontend/dist ./frontend/dist
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
