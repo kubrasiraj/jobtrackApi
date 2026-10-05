@@ -8,7 +8,7 @@ The application is deployed as a single service, with the React production build
 
 ## Live Demo
 
-jobtrackapi-production.up.railway.app
+https://jobtrackapi-production.up.railway.app/
 
 ## Features
 
